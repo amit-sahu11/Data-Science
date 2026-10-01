@@ -1,0 +1,6 @@
+product,category,price,units_sold
+Laptop,Electronics,1200.0,5
+Mouse,Electronics,25.5,40
+Chair,Office,150.0,12
+Desk,Office,300.0,8
+Monitor,Electronics,280.0,15

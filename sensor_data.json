@@ -1,0 +1,9 @@
+{
+  "station_id": "STATION_NORTH_01",
+  "status": "active",
+  "readings": [
+    {"sensor": "temperature", "value": 24.5, "unit": "C"},
+    {"sensor": "humidity", "value": 65.0, "unit": "%"},
+    {"sensor": "pressure", "value": 1013.2, "unit": "hPa"}
+  ]
+}
