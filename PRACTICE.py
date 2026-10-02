@@ -1,165 +1,159 @@
 # ==============================================================================
-# 📝 PRACTICE.py — Phase 2: Practice Set 3
-# Topic: Statistical Dispersion, Argmax, Reshaping & Broadcasting Mechanics
+# 📝 PRACTICE.py — Phase 3: Practice Set 1
+# Topic: Pandas Architecture — Series, DataFrames & Automatic Index Alignment
 # ==============================================================================
 # Instructions:
 # Write your code directly under each problem where marked.
 # Do not delete or overwrite the problem setup code.
 # When you have completed all problems, save this file and say: "check it"!
 # ==============================================================================
+import pandas as pd
 import numpy as np
 
 # ------------------------------------------------------------------------------
-# Problem 1: Statistical Dispersion & Z-Score Anomaly Detection
+# Problem 1: Series Anatomy — Data Buffer vs Labeled Index
 # ------------------------------------------------------------------------------
-# In web infrastructure, server latency spikes indicate database bottlenecks.
-# Below are response latency measurements (in milliseconds) from a web service:
-latencies = np.array([24.5, 26.1, 25.0, 24.8, 120.5, 25.4, 25.2, 26.0])
+# In e-commerce analytics, product stock levels are tracked by unique SKU codes.
+# Below are stock counts and their corresponding product SKU strings:
+skus = ["SKU_LAPTOP", "SKU_MOUSE", "SKU_KEYBOARD", "SKU_MONITOR"]
+stock_counts = [45, 230, 115, 60]
 
 # Task:
-# 1. Compute the arithmetic mean of latencies and store in `mean_lat`.
-# 2. Compute the standard deviation of latencies and store in `std_lat`.
-# 3. Compute the Z-Score for each data point: z = (latencies - mean) / std.
-#    Store the resulting array in `z_scores`.
-# 4. Using boolean masking on `z_scores`, extract all raw latency values from
-#    `latencies` where the z_score is strictly greater than 2.0 (anomalies).
-#    Store these in `outliers`.
+# 1. Create a Pandas Series named `inventory` using `stock_counts` as the data
+#    and `skus` as the index labels.
+# 2. Extract the underlying raw NumPy ndarray buffer from `inventory` and store in `raw_counts`.
+# 3. Extract the Index object from `inventory` and store in `sku_labels`.
+# 4. Access the stock count for "SKU_KEYBOARD" using label indexing and store in `kb_stock`.
 
 # Write your code for Problem 1 below:
 
-mean_lat = np.mean(latencies)
-std_lat = np.std(latencies)
-z_scores = (latencies-mean_lat)/std_lat
-outliers = latencies[z_scores>2.0]
+
+inventory = pd.Series(stock_counts,index = skus)
+
+raw_counts = inventory.to_numpy()
+print(raw_counts)
+
+sku_labels = inventory.index
+print(sku_labels)
+
+kb_stock = inventory["SKU_KEYBOARD"]
+print(kb_stock)
 
 # 👨‍🏫 TEACHER REVIEW:
-# Status: 🌟 100% PERFECT! Flawless Mastery!
+# Status: 🌟 100% PERFECT! Flawless!
 # What's Great:
-#   - Mean, standard deviation, and vectorized Z-Score calculations are 100% spot-on!
-#   - Direct boolean index extraction `latencies[z_scores > 2.0]` cleanly isolates the anomaly ([120.5]).
-#   - Memory efficient, SIMD-accelerated outlier detection!
-
-
+#   - Created Series with custom labels seamlessly.
+#   - `.to_numpy()` is the modern, idiomatic standard to grab the underlying buffer!
+#   - `.index` and label lookup `inventory["SKU_KEYBOARD"]` are 100% spot-on.
 
 
 # ------------------------------------------------------------------------------
-# Problem 2: Business Decision-Making with Argmin & Argmax
+# Problem 2: The Superpower of Automatic Index Alignment
 # ------------------------------------------------------------------------------
-# A retail company tracks 4 store branches across 6 consecutive months (Jan to Jun).
-# Each row represents a store [Store 0 to 3], and each column is a month [Month 0 to 5]:
-store_sales = np.array([
-    [50, 62, 58, 70, 65, 80],   # Store 0
-    [45, 55, 60, 58, 62, 64],   # Store 1
-    [72, 75, 80, 85, 90, 95],   # Store 2
-    [30, 32, 40, 38, 42, 45]    # Store 3
-])
+# Two branch stores report their revenue for various product categories.
+# Notice that Store B sells Tablets, but Store A does not; Store A sells Monitors,
+# but Store B does not.
+store_a_rev = pd.Series([12000, 4500, 8000], index=["Laptops", "Mice", "Monitors"])
+store_b_rev = pd.Series([9500, 3200, 6000], index=["Laptops", "Mice", "Tablets"])
 
 # Task:
-# 1. For EACH STORE (row-wise), find the index of the month that had the PEAK sales.
-#    (Walk horizontally across columns, collapsing axis 1).
-#    Store the array of month indices in `best_month_per_store`.
-# 2. For EACH MONTH (column-wise), find the index of the store that was the TOP PERFORMER.
-#    (Walk vertically down rows, collapsing axis 0).
-#    Store the array of store indices in `top_store_per_month`.
+# 1. Add `store_a_rev` and `store_b_rev` together using direct addition (+)
+#    and store in `total_direct`.
+#    Observe: Categories not present in both will become NaN!
+# 2. To safely handle missing categories, use the `.add()` method with `fill_value=0`
+#    so missing categories are treated as 0 instead of NaN.
+#    Store the result in `total_safe`.
 
 # Write your code for Problem 2 below:
 
-best_month_per_store = np.argmax(store_sales,axis=1)
-print(best_month_per_store)
+total_direct = store_a_rev + store_b_rev
+print(total_direct)
 
-top_store_per_month = np.argmax(store_sales,axis=0)
-print(top_store_per_month)
+total_safe = store_a_rev.add(store_b_rev,fill_value = 0)
+print(total_safe)
 
 # 👨‍🏫 TEACHER REVIEW:
 # Status: 🌟 100% PERFECT! Flawless!
 # What's Great:
-#   - You nailed the 2D axis mechanics:
-#     * Row-wise peak across columns = axis=1 (output: [5, 5, 5, 5] -> Month 5 was peak for all stores).
-#     * Column-wise top store across rows = axis=0 (output: [2, 2, 2, 2, 2, 2] -> Store 2 won every month).
-#   - Pure NumPy idiomatic mastery!
-
+#   - Direct addition (+) showed how non-overlapping categories become NaN.
+#   - Safe `.add(..., fill_value=0)` correctly handled missing values across branches!
 
 
 # ------------------------------------------------------------------------------
-# Problem 3: Array Reshaping & ML Feature Vector Preparation
+# Problem 3: DataFrame Construction & Metadata Inspection
 # ------------------------------------------------------------------------------
-# Machine learning algorithms (like Linear Regression in Scikit-Learn) strictly require
-# 2D matrices where rows = samples and columns = features.
-# A continuous flat stream of sensor readings:
-sensor_stream = np.arange(10, 130, 10)  # 12 readings: [10, 20, 30, ..., 120]
+# Build a customer dataset containing heterogeneous data types (strings, ints, floats, booleans).
+# Raw data dictionary:
+customer_data = {
+    "customer_id": [101, 102, 103, 104],
+    "name": ["Alice", "Bob", "Charlie", "Diana"],
+    "age": [28, 45, 34, 52],
+    "spend_usd": [250.75, 1200.50, 45.00, 890.25],
+    "is_premium": [True, True, False, True]
+}
 
 # Task:
-# 1. Reshape `sensor_stream` into a 2D matrix of 3 rows and 4 columns.
-#    Store in `grid_3x4`.
-# 2. Transpose `grid_3x4` so its shape becomes (4, 3) (swapping rows & columns).
-#    Store in `grid_transposed`.
-# 3. Take the first column of `grid_transposed` (which is a 1D array of 4 items)
-#    and reshape it into a 2D column vector of shape (4, 1) using `-1` wildcard.
-#    Store in `col_vector`.
+# 1. Construct a Pandas DataFrame from `customer_data` and store in `df_customers`.
+# 2. Set the index of `df_customers` to be the "customer_id" column (using `.set_index()`).
+#    Store the updated DataFrame in `df_indexed`.
+# 3. Extract the "spend_usd" column from `df_indexed` as a Series and store in `spend_series`.
+# 4. Verify that `type(spend_series)` is a `pd.Series` and inspect its `.dtype`.
+#    Store its dtype in `spend_dtype`.
 
 # Write your code for Problem 3 below:
 
-grid_3x4 = np.reshape(sensor_stream,(3,4))
-print(grid_3x4)
+df_customers = pd.DataFrame(customer_data)
 
-grid_transposed = np.transpose(grid_3x4)
-print(grid_transposed)
+df_indexed = df_customers.set_index("customer_id")
 
-first_col = grid_transposed[:,0]
-col_vector = np.reshape(first_col,(-1,1))
-print(col_vector)
+spend_series = df_indexed["spend_usd"]
+
+spend_dtype = spend_series.dtype
 
 # 👨‍🏫 TEACHER REVIEW:
 # Status: 🌟 100% PERFECT! Flawless!
 # What's Great:
-#   - Task 1: Reshaping (12,) -> (3, 4) is 100% correct!
-#   - Task 2: Transposing (3, 4) -> (4, 3) is 100% correct!
-#   - Task 3: 2D column slicing `grid_transposed[:, 0]` followed by `.reshape(-1, 1)` cleanly creates
-#     the exact (4, 1) 2D column feature vector required by Scikit-Learn!
+#   - Clean DataFrame construction from heterogeneous dictionary.
+#   - `.set_index("customer_id")` correctly designated the primary key row index.
+#   - Column extraction `df_indexed["spend_usd"]` verified as a `pd.Series` with `.dtype == float64`.
 #   - Outstanding correction!
 
 
 
 # ------------------------------------------------------------------------------
-# Problem 4: Broadcasting Mechanics — Feature Normalization (Mean-Centering)
+# Problem 4: Vectorized Feature Engineering on DataFrames
 # ------------------------------------------------------------------------------
-# In Machine Learning, centering data (subtracting the feature mean) speeds up
-# gradient descent and prevents features with larger numbers from dominating.
-# A housing dataset with 3 houses (rows) and 3 features [Area, Bedrooms, Age] (columns):
-houses = np.array([
-    [18.0, 3.0, 15.0],   # House 0
-    [24.0, 4.0,  5.0],   # House 1
-    [12.0, 2.0, 25.0]    # House 2
-])
+# In financial risk analysis, we calculate customer debt-to-income ratio (DTI)
+# and flag high-risk borrowers.
+employee_data = {
+    "monthly_income": [5000.0, 3200.0, 8500.0, 2100.0],
+    "monthly_debt": [1500.0, 1600.0, 1700.0, 1260.0]
+}
+df_finance = pd.DataFrame(employee_data)
 
 # Task:
-# 1. Calculate the mean of EACH FEATURE across all houses (collapse axis 0).
-#    Store in `feature_means`. (Shape should be (3,)).
-# 2. Using NumPy Broadcasting, subtract `feature_means` directly from `houses`.
-#    NumPy will automatically stretch the 1D (3,) array across all 3 rows of the (3, 3) matrix!
-#    Store the centered matrix in `normalized_houses`.
-# 3. Verify: Calculate the mean of each feature in `normalized_houses` (axis 0)
-#    and store in `centered_means`. (They should all be virtually 0.0!).
+# 1. Create a new column "dti_ratio" in `df_finance` calculated as:
+#    dti_ratio = monthly_debt / monthly_income
+#    (Do this with pure vectorization — NO for-loops!).
+# 2. Create a new boolean column "high_risk" in `df_finance` that is True
+#    if "dti_ratio" is strictly greater than 0.40 (40%), otherwise False.
+# 3. Calculate the average DTI ratio across all employees and store in `avg_dti`.
 
 # Write your code for Problem 4 below:
 
-feature_means = np.mean(houses,axis=0)
-print(feature_means)
+df_finance["dti_ratio"] = df_finance["monthly_debt"] / df_finance["monthly_income"]
 
-normalized_houses = np.subtract(houses,feature_means)
-print(normalized_houses)
+df_finance["high_risk"] = df_finance["dti_ratio"] > 0.40
 
-centered_means = np.mean(normalized_houses,axis=0)
-print(centered_means)
+avg_dti = df_finance["dti_ratio"].mean()
+print(avg_dti)
 
 # 👨‍🏫 TEACHER REVIEW:
 # Status: 🌟 100% PERFECT! Flawless Mastery!
 # What's Great:
-#   - Feature mean calculation collapsing axis=0 gave exactly [18.0, 3.0, 15.0].
-#   - Broadcasting worked seamlessly: subtracting shape (3,) from shape (3, 3) automatically
-#     stretched across rows without loops or manual duplication.
-#   - Centered means verified to [0., 0., 0.] — data is perfectly normalized for Machine Learning!
-
+#   - Pure vectorized division `monthly_debt / monthly_income` without loops!
+#   - Vectorized boolean flag `dti_ratio > 0.40` generated exact True/False Series.
+#   - Summary metric `avg_dti = ...mean()` computed accurately (mean DTI = 0.428).
 
 
 

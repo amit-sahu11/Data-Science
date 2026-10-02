@@ -16,7 +16,7 @@ ASSETS_DIR = os.path.join(SCRATCH_DIR, ".assets")
 os.makedirs(ASSETS_DIR, exist_ok=True)
 
 # -------------------------------------------------------------
-# Chart 1: Progress Tracker Chart (Phase 1: 100%, Phase 2: 100%)
+# Chart 1: Progress Tracker Chart (Phase 1: 100%, Phase 2: 100%, Phase 3: 20%)
 # -------------------------------------------------------------
 def make_progress_chart():
     fig, ax = plt.subplots(figsize=(7, 2.5), dpi=200)
@@ -29,13 +29,13 @@ def make_progress_chart():
         "6. ML Scikit", 
         "7. Projects"
     ]
-    progress = [100, 100, 0, 0, 0, 0, 0] # Phase 1 & 2 100% Complete!
+    progress = [100, 100, 20, 0, 0, 0, 0] # Phase 3 in progress!
     colors_list = ['#16a34a' if p == 100 else ('#2563eb' if p > 0 else '#cbd5e1') for p in progress]
     
     bars = ax.barh(phases[::-1], progress[::-1], color=colors_list[::-1], height=0.55, edgecolor='#1e293b', linewidth=0.8)
     ax.set_xlim(0, 110)
     ax.set_xlabel('Completion Percentage (%)', fontsize=9.5, fontweight='bold', color='#1e293b')
-    ax.set_title('Master Curriculum Completion (Phases 1 & 2 Complete: 100%)', fontsize=11, fontweight='bold', color='#0f172a', pad=8)
+    ax.set_title('Master Curriculum Completion (Phase 3: Pandas in Progress)', fontsize=11, fontweight='bold', color='#0f172a', pad=8)
     
     for bar in bars:
         w = bar.get_width()
@@ -69,7 +69,7 @@ def make_broadcasting_diagram():
             ax1.add_patch(plt.Rectangle((c*0.9+0.1, (2-r)*0.9+0.1), 0.8, 0.8, facecolor='#dbeafe', edgecolor='#2563eb', lw=1.2))
     ax1.text(1.35, 1.35, "Raw Data\n(3 samples,\n3 features)", ha='center', va='center', fontsize=7.5, fontweight='bold', color='#1e3a8a')
     
-    ax_op.text(1.5, 1.35, "−", ha='center', va='center', fontsize=20, fontweight='bold', color='#dc2626')
+    ax_op.text(1.5, 1.35, "-", ha='center', va='center', fontsize=20, fontweight='bold', color='#dc2626')
     
     ax2.set_title("Vector B: (3,) -> (3, 3)", fontsize=8.5, fontweight='bold', color='#166534')
     for r in range(3):
@@ -95,6 +95,41 @@ def make_broadcasting_diagram():
     return chart_path
 
 # -------------------------------------------------------------
+# Chart 3: Pandas Architecture Diagram (DataFrame -> Series -> NumPy Buffer + Index)
+# -------------------------------------------------------------
+def make_pandas_architecture_diagram():
+    fig, ax = plt.subplots(figsize=(7.2, 2.4), dpi=200)
+    ax.set_xlim(0, 10)
+    ax.set_ylim(0, 4)
+    ax.axis('off')
+    
+    # Outer box: DataFrame
+    ax.add_patch(plt.Rectangle((0.2, 0.2), 9.6, 3.6, facecolor='#f8fafc', edgecolor='#0f172a', lw=1.5, linestyle='--'))
+    ax.text(5.0, 3.5, "Pandas DataFrame: 2D Heterogeneous Labeled Container", ha='center', fontsize=9.5, fontweight='bold', color='#0f172a')
+    
+    # Column 1: Series "Age"
+    ax.add_patch(plt.Rectangle((0.6, 0.5), 4.1, 2.7, facecolor='#eff6ff', edgecolor='#3b82f6', lw=1.2))
+    ax.text(2.65, 2.9, "pd.Series: 'Age' (int64)", ha='center', fontsize=8.5, fontweight='bold', color='#1d4ed8')
+    ax.add_patch(plt.Rectangle((0.9, 1.6), 3.5, 0.9, facecolor='#dbeafe', edgecolor='#2563eb', lw=1))
+    ax.text(2.65, 2.05, "NumPy ndarray: [28, 45, 34, 52]\n(Contiguous C-Memory Buffer)", ha='center', va='center', fontsize=7, color='#1e3a8a')
+    ax.add_patch(plt.Rectangle((0.9, 0.7), 3.5, 0.7, facecolor='#fef3c7', edgecolor='#d97706', lw=1))
+    ax.text(2.65, 1.05, "Index: [101, 102, 103, 104] (Hash Map)", ha='center', va='center', fontsize=7, color='#92400e')
+
+    # Column 2: Series "Spend"
+    ax.add_patch(plt.Rectangle((5.3, 0.5), 4.1, 2.7, facecolor='#f0fdf4', edgecolor='#22c55e', lw=1.2))
+    ax.text(7.35, 2.9, "pd.Series: 'Spend' (float64)", ha='center', fontsize=8.5, fontweight='bold', color='#15803d')
+    ax.add_patch(plt.Rectangle((5.6, 1.6), 3.5, 0.9, facecolor='#dcfce7', edgecolor='#16a34a', lw=1))
+    ax.text(7.35, 2.05, "NumPy ndarray: [250.7, 1200.5, 45.0, 890.2]\n(Contiguous C-Memory Buffer)", ha='center', va='center', fontsize=7, color='#14532d')
+    ax.add_patch(plt.Rectangle((5.6, 0.7), 3.5, 0.7, facecolor='#fef3c7', edgecolor='#d97706', lw=1))
+    ax.text(7.35, 1.05, "Shared Index: [101, 102, 103, 104]", ha='center', va='center', fontsize=7, color='#92400e')
+
+    plt.tight_layout()
+    chart_path = os.path.join(ASSETS_DIR, "pandas_architecture_diagram.png")
+    plt.savefig(chart_path, bbox_inches='tight')
+    plt.close()
+    return chart_path
+
+# -------------------------------------------------------------
 # BUILD: Study_Progress_Tracker.pdf
 # -------------------------------------------------------------
 def build_progress_tracker():
@@ -112,7 +147,7 @@ def build_progress_tracker():
     
     # Title Banner
     elements.append(Paragraph("📊 Data Science Long-Term Learning Progress Tracker", title_style))
-    elements.append(Paragraph("Student: <b>Amit</b> &nbsp;|&nbsp; Track: <b>Data Science & Practical Machine Learning</b> &nbsp;|&nbsp; Status: <b>Phase 1 & Phase 2 Mastered! 🏆</b>", sub_style))
+    elements.append(Paragraph("Student: <b>Amit</b> &nbsp;|&nbsp; Track: <b>Data Science & Practical Machine Learning</b> &nbsp;|&nbsp; Status: <b>Phase 3: Pandas In Progress (28/28 Solved! 🏆)</b>", sub_style))
     elements.append(HRFlowable(width="100%", thickness=1.5, color=colors.HexColor('#2563eb'), spaceBefore=4, spaceAfter=8))
     
     # Progress Chart
@@ -126,7 +161,7 @@ def build_progress_tracker():
         ["Phase", "Topic Domain", "Problems Solved", "Status"],
         ["Phase 1", "Python Core & Memory Architecture", "12 / 12", "COMPLETED (100% Mastery) ✅"],
         ["Phase 2", "NumPy Vectorization & Dispersion", "12 / 12", "COMPLETED (100% Mastery) ✅"],
-        ["Phase 3", "Pandas Data Manipulation & Wrangling", "0 / --", "READY TO COMMENCE (Next Topic) 🚀"],
+        ["Phase 3", "Pandas Data Manipulation & Wrangling", "4 / 20", "IN PROGRESS (Topic 3.1 Mastered: 20%) 🚀"],
         ["Phase 4", "EDA & Visualization (Seaborn/Matplotlib)", "0 / --", "Pending Phase 3"],
         ["Phase 5", "Applied Statistics & Probability", "0 / --", "Pending Phase 4"],
         ["Phase 6", "Classical ML (Scikit-Learn)", "0 / --", "Pending Phase 5"],
@@ -152,7 +187,7 @@ def build_progress_tracker():
     elements.append(Spacer(1, 8))
     
     # Practice Sets Log Table
-    elements.append(Paragraph("📝 Practice Performance Log (24 / 24 Problems Mastered)", h2_style))
+    elements.append(Paragraph("📝 Practice Performance Log (28 / 28 Problems Mastered)", h2_style))
     sets_data = [
         ["Set #", "Topic Focus", "Problems", "Accuracy", "Archive Location"],
         ["Set 1.1", "Memory References, Slicing, Safe Dicts", "4 / 4", "100%", "practice_archive/Session_01/Set_01"],
@@ -160,7 +195,8 @@ def build_progress_tracker():
         ["Set 1.3", "File I/O, CSV DictReader, JSON load", "4 / 4", "100%", "practice_archive/Session_01/Set_03"],
         ["Set 2.1", "NumPy Ndarray, SIMD, arange/linspace", "4 / 4", "100%", "practice_archive/Session_02/Set_01"],
         ["Set 2.2", "2D Slicing, Axis=0/1, Boolean Masking", "4 / 4", "100%", "practice_archive/Session_02/Set_02"],
-        ["Set 2.3", "Z-Scores, Argmax, Reshape, Broadcasting", "4 / 4", "100%", "practice_archive/Session_02/Set_03"]
+        ["Set 2.3", "Z-Scores, Argmax, Reshape, Broadcasting", "4 / 4", "100%", "practice_archive/Session_02/Set_03"],
+        ["Set 3.1", "Series, DataFrames, Alignment, DTI Ratio", "4 / 4", "100%", "practice_archive/Session_03/Set_01"]
     ]
     t2 = Table(sets_data, colWidths=[55, 205, 60, 60, 150])
     t2.setStyle(TableStyle([
@@ -182,7 +218,8 @@ def build_progress_tracker():
     elements.append(Paragraph("🧠 Study Memory & Milestone Log", h2_style))
     mem_text = """<b>Session 1 (Python Core & Pipelines):</b> Mastered RAM pointers vs deep copies, half-open interval indexing, and safe file I/O with context managers.<br/>
 <b>Session 2 (NumPy Foundations & 2D Slicing):</b> Mastered contiguous C-memory layout, SIMD vectorization, 2D matrix sub-box extraction, and the axis collapse mental model (<code>axis=0</code> vertical drop vs <code>axis=1</code> horizontal walk).<br/>
-<b>Session 3 (NumPy Statistics & Broadcasting Engine):</b> Mastered Z-score anomaly detection, <code>np.argmax</code> across axes, reshaping memory layout with <code>-1</code> wildcard, and the NumPy broadcasting engine for feature mean-centering!"""
+<b>Session 3 (NumPy Statistics & Broadcasting Engine):</b> Mastered Z-score anomaly detection, <code>np.argmax</code> across axes, reshaping memory layout with <code>-1</code> wildcard, and the NumPy broadcasting engine for feature mean-centering.<br/>
+<b>Session 4 (Pandas Architecture & Automatic Alignment):</b> Unpacked the internal anatomy of <code>pd.Series</code> (NumPy C-buffer + Index hash-map) and <code>pd.DataFrame</code>. Mastered label-based automatic alignment, <code>.add(fill_value=0)</code>, <code>.set_index()</code>, and vectorized financial feature engineering."""
     elements.append(Paragraph(mem_text, body_style))
     
     doc.build(elements)
@@ -197,6 +234,7 @@ def build_detailed_study_notes():
     np_img = os.path.join(ASSETS_DIR, "numpy_memory_diagram.png")
     axis_img = os.path.join(ASSETS_DIR, "axis_diagram.png")
     broad_img = make_broadcasting_diagram()
+    pandas_img = make_pandas_architecture_diagram()
     
     pdf_path = os.path.join(SCRATCH_DIR, "Data_Science_Study_Notes.pdf")
     doc = SimpleDocTemplate(pdf_path, pagesize=letter, rightMargin=36, leftMargin=36, topMargin=36, bottomMargin=36)
@@ -333,7 +371,6 @@ outliers = latencies[z_scores > 2.0]  # array([120.5])"""
         body_style
     ))
     code_10_1 = """# Reshaping with the -1 Wildcard:
-# Scikit-Learn strictly requires 2D matrices (samples, features).
 arr = np.arange(10, 130, 10)         # 12 elements (1D)
 grid = arr.reshape(3, 4)             # 2D matrix (3, 4)
 grid_t = grid.T                      # Transpose -> shape (4, 3)
@@ -369,15 +406,47 @@ col_vector = first_col.reshape(-1, 1) # 2D column vector of shape (4, 1)"""
     [12.0, 2.0, 25.0]
 ])
 
-# 1. Feature means across all rows (collapses axis 0 -> shape (3,)):
+# Feature means across all rows (collapses axis 0 -> shape (3,)):
 feature_means = houses.mean(axis=0)  # [18.0, 3.0, 15.0]
 
-# 2. Vectorized Broadcasting: (3, 3) - (3,) -> NumPy stretches across rows!
-normalized_houses = houses - feature_means
-
-# 3. Verification:
-print(normalized_houses.mean(axis=0)) # [0.0, 0.0, 0.0]"""
+# Vectorized Broadcasting: (3, 3) - (3,) -> Stretches across rows!
+normalized_houses = houses - feature_means"""
     elements.append(Paragraph(code_11.replace('\n', '<br/>').replace(' ', '&nbsp;'), code_style))
+    
+    elements.append(PageBreak())
+
+    # Module 12: NEW! Pandas Architecture & Automatic Alignment
+    elements.append(Paragraph("12. Phase 3: Tabular Computing with Pandas Architecture", h2_style))
+    elements.append(Paragraph(
+        "Pandas extends NumPy by providing <b>heterogeneous dtypes</b> and <b>semantic label indexing</b>. "
+        "Under the hood, a <code>pd.Series</code> is a NumPy array paired with an Index hash-map, while a <code>pd.DataFrame</code> "
+        "is a dictionary of Series sharing a common row Index.",
+        body_style
+    ))
+    if os.path.exists(pandas_img):
+        elements.append(Image(pandas_img, width=460, height=150))
+        
+    elements.append(Paragraph(
+        "<b>12.1 Automatic Label-Based Alignment (The Pandas Superpower):</b><br/>"
+        "When performing arithmetic across two Series or DataFrames, Pandas matches rows by their <b>Index labels</b>, not their array positions. "
+        "Missing keys naturally evaluate to <code>NaN</code>, preventing silent data misalignment. Use <code>.add(fill_value=0)</code> to safely aggregate disjoint datasets.",
+        body_style
+    ))
+    code_12 = """import pandas as pd
+
+store_a = pd.Series([12000, 4500, 8000], index=["Laptops", "Mice", "Monitors"])
+store_b = pd.Series([9500, 3200, 6000], index=["Laptops", "Mice", "Tablets"])
+
+# Direct addition (+) creates NaNs for disjoint labels:
+total_direct = store_a + store_b
+
+# Safe addition fills missing labels with 0.0:
+total_safe = store_a.add(store_b, fill_value=0)
+
+# Vectorized Feature Engineering on DataFrames:
+df["dti_ratio"] = df["monthly_debt"] / df["monthly_income"]
+df["high_risk"] = df["dti_ratio"] > 0.40"""
+    elements.append(Paragraph(code_12.replace('\n', '<br/>').replace(' ', '&nbsp;'), code_style))
     
     doc.build(elements)
     print("Data_Science_Study_Notes.pdf built successfully!")

@@ -28,7 +28,13 @@ This folder maintains an organized, permanent record of all completed practice s
   * **Topics**: Statistical dispersion metrics (`std`, `var`, `z-score` anomaly detection), extrema positioning (`argmin`, `argmax` along axes), array reshaping & transposing (`reshape`, `-1` wildcard, `transpose`), broadcasting engine (mean-centering data normalization).
   * **Status**: ✅ 100% Mastered
 
+### 📂 `Session_03_Pandas_Manipulation/`
+* [Practice_Set_01_Series_DataFrames_Alignment.py](file:///c:/Users/amitk/Desktop/Data%20Science/practice_archive/Session_03_Pandas_Manipulation/Practice_Set_01_Series_DataFrames_Alignment.py)
+  * **Topics**: Pandas Series anatomy (NumPy `.to_numpy()` buffer vs labeled `.index`), automatic label-based alignment (`+` vs `.add(fill_value=0)`), DataFrame construction & `.set_index()`, vectorized feature engineering (Debt-to-Income calculation).
+  * **Status**: ✅ 100% Mastered
+
 ---
 
-*Phase 1 (Python Core): 100% Complete | Phase 2 (NumPy Vectorization): 100% Complete! (All 3 Sets Mastered! 24/24 Problems Solved)*
+*Phase 1: 100% Complete | Phase 2: 100% Complete | Phase 3 (Pandas): Set 1 Mastered! (28/28 Total Problems Mastered!)*
+
 

@@ -22,8 +22,8 @@
   - [x] 2.3 Mathematical & Statistical Operations in NumPy (`std`, `var`, `argmin`, `argmax`, percentiles)
   - [x] 2.4 Broadcasting Mechanics & Array Reshaping (`reshape`, `transpose`, `newaxis`)
 - [ ] **Phase 3: Data Manipulation & Wrangling (Pandas)**
-  - [ ] 3.1 Series and DataFrames
-  - [ ] 3.2 Filtering, Indexing, and Selecting Data
+  - [x] 3.1 Series and DataFrames (Architecture, `.values`/`.to_numpy()`, `.index`, Alignment, `.set_index()`)
+  - [ ] 3.2 Filtering, Indexing, and Selecting Data (`.loc`, `.iloc`, Boolean Masking, Querying)
   - [ ] 3.3 Handling Missing Data, Outliers, and Cleaning
   - [ ] 3.4 GroupBy, Aggregations, and Pivoting
   - [ ] 3.5 Merging, Joining, and Reshaping Datasets
@@ -49,7 +49,7 @@
 ---
 
 ## 📈 Current Status Summary
-- **Current Phase**: Phase 2: COMPLETE (100% Mastered! 🏆) | Ready for Phase 3: Pandas
+- **Current Phase**: Phase 3: Data Manipulation & Wrangling with Pandas (Topic 3.1 Mastered!)
 - **Python Version**: Python 3.12.10 installed & verified
 - **Topics Completed**:
   - Python Environment & Libraries Setup
@@ -79,24 +79,24 @@
   - Extrema position indexing (`argmin`, `argmax` along axes)
   - Array reshaping & transposing (`reshape`, `-1` wildcard, `transpose`)
   - Broadcasting engine (two golden rules, zero-stride virtual expansion, feature mean-centering)
+  - Pandas Series architecture (NumPy `.to_numpy()` data buffer + Index object)
+  - Automatic label-based index alignment (`+` vs `.add(fill_value=0)`)
+  - Heterogeneous DataFrame creation from dictionaries & inspection (`.dtypes`, `.shape`)
+  - Custom primary key indexing with `.set_index()`
+  - Vectorized financial feature engineering on DataFrames (Debt-to-Income calculation)
 - **Topics Currently Learning**:
-  - Phase 3.1: Pandas Architecture (Series, DataFrames, Index alignment)
+  - Phase 3.2: Filtering, Indexing & Selecting Data (`.loc` label vs `.iloc` integer position indexing)
 - **Strong Areas**:
-  - Memory views vs deep copies (100% understood)
-  - 2D matrix slicing and sub-box extraction
-  - Boolean filtering without for-loops
-  - Conditional data classification with `np.where()`
-  - Statistical anomaly detection with Z-scores
-  - Axis navigation (`axis=0` vs `axis=1`)
-  - Vectorized broadcasting and feature normalization
+  - Series vs DataFrame mental model
+  - Automatic index alignment
+  - Vectorized feature engineering without loops
+  - NumPy contiguous memory & broadcasting
 - **Areas Solidified & Revised**:
-  - Axis Collapse Mental Model: `axis=0` crushes rows vertically; `axis=1` crushes columns horizontally.
-  - Python `and` (single truth container evaluation) vs NumPy bitwise `&` (element-wise SIMD comparison).
-  - 2D Slicing before reshaping: `grid[:, 0]` to isolate a column before applying `.reshape(-1, 1)`.
+  - Distinguishing DataFrame variables from string lists: calling methods directly on `df_customers` rather than `["df_customer"]`.
 - **Questions Wrong**:
-  - Phase 2 Set 3: 0 wrong! (All 4 problems solved with 100% precision).
-- **Practice Exercises Completed**: 6 sets (24 problems total, 100% Mastered)
-- **Recommended Next Topic**: Phase 3.1: Pandas Series & DataFrames Architecture
+  - Phase 3 Set 1: 0 wrong! (Self-corrected syntax cleanly on first prompt).
+- **Practice Exercises Completed**: 7 sets (28 problems total, 100% Mastered)
+- **Recommended Next Topic**: Phase 3.2: Advanced Indexing & Selection (`loc` vs `iloc`, Conditional Filtering on DataFrames)
 
 ---
 
@@ -125,4 +125,17 @@
 - **PRACTICE COMPLETED**: Phase 2 Practice Set 3 (Archived in `practice_archive/Session_02_NumPy_Vectorization/Practice_Set_03_Stats_Reshape_Broadcasting.py`).
 - **NEXT TOPIC**: Phase 3.1: Introduction to Pandas (Series, DataFrames, Memory & Indexing)
 - **REVISION NEEDED**: None needed — 24/24 problems across 6 sets mastered.
+
+### Session 4 (Pandas Architecture: Series, DataFrames & Alignment)
+- **DATE**: 2026-10-02
+- **SUBJECT**: Data Science & Tabular Manipulation (Pandas)
+- **TOPICS COMPLETED**: Pandas Series anatomy (NumPy `.to_numpy()` data buffer + Index object), Automatic label-based index alignment (`+` vs `.add(fill_value=0)`), DataFrame construction from heterogeneous dicts, `.set_index()` custom indexing, Vectorized feature engineering on DataFrames.
+- **TOPICS IN PROGRESS**: Phase 3.2 - Advanced Indexing & Selection (`loc` vs `iloc`, Boolean Filtering on DataFrames)
+- **STRONG AREAS**: Series & DataFrame concepts, automatic alignment handling, vectorized feature creation.
+- **WEAK AREAS**: None — 100% accuracy achieved across all 4 problems in Set 1!
+- **QUESTIONS I GOT WRONG**: None (clean first-prompt correction).
+- **PRACTICE COMPLETED**: Phase 3 Practice Set 1 (Archived in `practice_archive/Session_03_Pandas_Manipulation/Practice_Set_01_Series_DataFrames_Alignment.py`).
+- **NEXT TOPIC**: Phase 3.2: Filtering, Indexing & Selecting Data with `.loc` and `.iloc`
+- **REVISION NEEDED**: None needed — 28/28 problems across 7 sets mastered.
+
 
