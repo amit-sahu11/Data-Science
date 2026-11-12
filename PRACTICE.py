@@ -1,6 +1,6 @@
 # ==============================================================================
-# 📝 PRACTICE.py — Phase 3: Practice Set 1
-# Topic: Pandas Architecture — Series, DataFrames & Automatic Index Alignment
+# 📝 PRACTICE.py — Phase 3: Practice Set 2
+# Topic: Advanced Indexing & Selection — .loc vs .iloc & Safe Conditional Filtering
 # ==============================================================================
 # Instructions:
 # Write your code directly under each problem where marked.
@@ -11,149 +11,110 @@ import pandas as pd
 import numpy as np
 
 # ------------------------------------------------------------------------------
-# Problem 1: Series Anatomy — Data Buffer vs Labeled Index
+# Problem 1: Label-Based Selection with .loc (Inclusive Slicing)
 # ------------------------------------------------------------------------------
-# In e-commerce analytics, product stock levels are tracked by unique SKU codes.
-# Below are stock counts and their corresponding product SKU strings:
-skus = ["SKU_LAPTOP", "SKU_MOUSE", "SKU_KEYBOARD", "SKU_MONITOR"]
-stock_counts = [45, 230, 115, 60]
+# A hospital manages patient triage records indexed by unique Patient ID:
+patients_data = {
+    "name": ["John", "Sarah", "Mike", "Emma", "David"],
+    "age": [45, 29, 62, 38, 51],
+    "blood_pressure": [140, 118, 155, 122, 130],
+    "department": ["Cardio", "General", "Cardio", "Orthopedic", "General"]
+}
+df_patients = pd.DataFrame(patients_data, index=["P101", "P102", "P103", "P104", "P105"])
 
 # Task:
-# 1. Create a Pandas Series named `inventory` using `stock_counts` as the data
-#    and `skus` as the index labels.
-# 2. Extract the underlying raw NumPy ndarray buffer from `inventory` and store in `raw_counts`.
-# 3. Extract the Index object from `inventory` and store in `sku_labels`.
-# 4. Access the stock count for "SKU_KEYBOARD" using label indexing and store in `kb_stock`.
+# 1. Using `.loc`, extract the entire record for patient "P103" as a Series.
+#    Store in `patient_p103`.
+# 2. Using `.loc`, extract the blood pressure for patient "P102" (scalar value).
+#    Store in `bp_p102`.
+# 3. Using `.loc`, slice patients from "P102" through "P104" (inclusive!)
+#    and extract only the "name" and "department" columns.
+#    Store this sub-DataFrame in `triage_subset`.
 
 # Write your code for Problem 1 below:
 
 
-inventory = pd.Series(stock_counts,index = skus)
-
-raw_counts = inventory.to_numpy()
-print(raw_counts)
-
-sku_labels = inventory.index
-print(sku_labels)
-
-kb_stock = inventory["SKU_KEYBOARD"]
-print(kb_stock)
-
-# 👨‍🏫 TEACHER REVIEW:
-# Status: 🌟 100% PERFECT! Flawless!
-# What's Great:
-#   - Created Series with custom labels seamlessly.
-#   - `.to_numpy()` is the modern, idiomatic standard to grab the underlying buffer!
-#   - `.index` and label lookup `inventory["SKU_KEYBOARD"]` are 100% spot-on.
 
 
 # ------------------------------------------------------------------------------
-# Problem 2: The Superpower of Automatic Index Alignment
+# Problem 2: Positional Selection with .iloc (Exclusive Offset Slicing)
 # ------------------------------------------------------------------------------
-# Two branch stores report their revenue for various product categories.
-# Notice that Store B sells Tablets, but Store A does not; Store A sells Monitors,
-# but Store B does not.
-store_a_rev = pd.Series([12000, 4500, 8000], index=["Laptops", "Mice", "Monitors"])
-store_b_rev = pd.Series([9500, 3200, 6000], index=["Laptops", "Mice", "Tablets"])
+# In algorithmic trading, server latency and price ticks arrive in time order.
+# The table uses arbitrary or non-numeric index labels:
+market_data = {
+    "timestamp": ["09:30:00", "09:30:01", "09:30:02", "09:30:03", "09:30:04"],
+    "ticker": ["AAPL", "AAPL", "AAPL", "GOOG", "GOOG"],
+    "price": [182.50, 182.75, 182.40, 175.20, 175.90],
+    "volume": [500, 1200, 300, 800, 1500]
+}
+df_market = pd.DataFrame(market_data, index=["tick_a", "tick_b", "tick_c", "tick_d", "tick_e"])
 
 # Task:
-# 1. Add `store_a_rev` and `store_b_rev` together using direct addition (+)
-#    and store in `total_direct`.
-#    Observe: Categories not present in both will become NaN!
-# 2. To safely handle missing categories, use the `.add()` method with `fill_value=0`
-#    so missing categories are treated as 0 instead of NaN.
-#    Store the result in `total_safe`.
+# 1. Using `.iloc`, extract the first 3 rows (rows 0, 1, 2) and the first 2 columns (0, 1).
+#    Remember: `.iloc` follows standard Python half-open interval rules [start:stop)!
+#    Store in `top_ticks`.
+# 2. Using `.iloc`, extract the very last row as a Series (use negative indexing -1).
+#    Store in `latest_tick`.
+# 3. Using `.iloc`, extract rows at indices 1 and 3, and columns at indices 2 and 3 ("price" & "volume").
+#    Store in `sampled_market`.
 
 # Write your code for Problem 2 below:
 
-total_direct = store_a_rev + store_b_rev
-print(total_direct)
 
-total_safe = store_a_rev.add(store_b_rev,fill_value = 0)
-print(total_safe)
-
-# 👨‍🏫 TEACHER REVIEW:
-# Status: 🌟 100% PERFECT! Flawless!
-# What's Great:
-#   - Direct addition (+) showed how non-overlapping categories become NaN.
-#   - Safe `.add(..., fill_value=0)` correctly handled missing values across branches!
 
 
 # ------------------------------------------------------------------------------
-# Problem 3: DataFrame Construction & Metadata Inspection
+# Problem 3: Multi-Condition Boolean Filtering on DataFrames
 # ------------------------------------------------------------------------------
-# Build a customer dataset containing heterogeneous data types (strings, ints, floats, booleans).
-# Raw data dictionary:
-customer_data = {
-    "customer_id": [101, 102, 103, 104],
-    "name": ["Alice", "Bob", "Charlie", "Diana"],
-    "age": [28, 45, 34, 52],
-    "spend_usd": [250.75, 1200.50, 45.00, 890.25],
-    "is_premium": [True, True, False, True]
+# In HR analytics, we filter employee records based on performance and tenure:
+hr_data = {
+    "emp_id": [201, 202, 203, 204, 205, 206],
+    "name": ["Alex", "Brian", "Catherine", "Daniel", "Eva", "Frank"],
+    "department": ["Engineering", "Sales", "Engineering", "Marketing", "Engineering", "Sales"],
+    "salary": [95000, 72000, 115000, 68000, 105000, 88000],
+    "rating": [4.8, 3.5, 4.9, 4.1, 3.9, 4.6]
 }
+df_hr = pd.DataFrame(hr_data).set_index("emp_id")
 
 # Task:
-# 1. Construct a Pandas DataFrame from `customer_data` and store in `df_customers`.
-# 2. Set the index of `df_customers` to be the "customer_id" column (using `.set_index()`).
-#    Store the updated DataFrame in `df_indexed`.
-# 3. Extract the "spend_usd" column from `df_indexed` as a Series and store in `spend_series`.
-# 4. Verify that `type(spend_series)` is a `pd.Series` and inspect its `.dtype`.
-#    Store its dtype in `spend_dtype`.
+# 1. Filter `df_hr` to find all employees where:
+#    - "department" is "Engineering" AND
+#    - "rating" is strictly greater than 4.0
+#    (Remember to use `&` and wrap each condition in parentheses!).
+#    Store the filtered DataFrame in `top_engineers`.
+# 2. Filter `df_hr` to find all employees where:
+#    - "salary" is greater than or equal to 100000 OR
+#    - "rating" is greater than or equal to 4.5
+#    (Use `|` with parentheses).
+#    Store in `high_performers_or_earners`.
 
 # Write your code for Problem 3 below:
 
-df_customers = pd.DataFrame(customer_data)
-
-df_indexed = df_customers.set_index("customer_id")
-
-spend_series = df_indexed["spend_usd"]
-
-spend_dtype = spend_series.dtype
-
-# 👨‍🏫 TEACHER REVIEW:
-# Status: 🌟 100% PERFECT! Flawless!
-# What's Great:
-#   - Clean DataFrame construction from heterogeneous dictionary.
-#   - `.set_index("customer_id")` correctly designated the primary key row index.
-#   - Column extraction `df_indexed["spend_usd"]` verified as a `pd.Series` with `.dtype == float64`.
-#   - Outstanding correction!
 
 
 
 # ------------------------------------------------------------------------------
-# Problem 4: Vectorized Feature Engineering on DataFrames
+# Problem 4: Safe In-Place Modification (Avoiding SettingWithCopyWarning)
 # ------------------------------------------------------------------------------
-# In financial risk analysis, we calculate customer debt-to-income ratio (DTI)
-# and flag high-risk borrowers.
-employee_data = {
-    "monthly_income": [5000.0, 3200.0, 8500.0, 2100.0],
-    "monthly_debt": [1500.0, 1600.0, 1700.0, 1260.0]
+# In customer churn prevention, telecom companies award loyalty bonus minutes
+# to accounts flagged as at-risk.
+churn_data = {
+    "account_id": [501, 502, 503, 504],
+    "monthly_charges": [85.0, 45.0, 95.0, 60.0],
+    "contract_months": [2, 24, 1, 12],
+    "loyalty_bonus": [0, 0, 0, 0]
 }
-df_finance = pd.DataFrame(employee_data)
+df_telecom = pd.DataFrame(churn_data).set_index("account_id")
 
 # Task:
-# 1. Create a new column "dti_ratio" in `df_finance` calculated as:
-#    dti_ratio = monthly_debt / monthly_income
-#    (Do this with pure vectorization — NO for-loops!).
-# 2. Create a new boolean column "high_risk" in `df_finance` that is True
-#    if "dti_ratio" is strictly greater than 0.40 (40%), otherwise False.
-# 3. Calculate the average DTI ratio across all employees and store in `avg_dti`.
+# 1. At-risk condition: An account is at risk if "contract_months" <= 3 AND "monthly_charges" > 70.0.
+#    Using `.loc[condition, "loyalty_bonus"] = 500`, safely award 500 bonus minutes
+#    to all matching accounts in `df_telecom` in place!
+# 2. Verify that accounts 501 and 503 received 500, while 502 and 504 remained 0.
+# 3. Calculate the total bonus minutes distributed across all accounts and store in `total_bonus`.
 
 # Write your code for Problem 4 below:
 
-df_finance["dti_ratio"] = df_finance["monthly_debt"] / df_finance["monthly_income"]
-
-df_finance["high_risk"] = df_finance["dti_ratio"] > 0.40
-
-avg_dti = df_finance["dti_ratio"].mean()
-print(avg_dti)
-
-# 👨‍🏫 TEACHER REVIEW:
-# Status: 🌟 100% PERFECT! Flawless Mastery!
-# What's Great:
-#   - Pure vectorized division `monthly_debt / monthly_income` without loops!
-#   - Vectorized boolean flag `dti_ratio > 0.40` generated exact True/False Series.
-#   - Summary metric `avg_dti = ...mean()` computed accurately (mean DTI = 0.428).
 
 
 
