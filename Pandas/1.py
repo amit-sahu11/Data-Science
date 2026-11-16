@@ -6,5 +6,4 @@ mydataset = {
     "passing" : [3,7,2]
 }
 df = pd.DataFrame(mydataset)
-
 print(df)
