@@ -12,7 +12,6 @@ class Student:
     def get_marks(self):
         return self.roll_no
 
-
 s1 = Student("amit",20)
 s1.welcome()
 print(s1.college_name)
