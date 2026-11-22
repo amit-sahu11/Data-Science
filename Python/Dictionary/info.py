@@ -10,5 +10,6 @@ info = {
 
 print(info)
 print(info["age"])
+
 for i,j in info.items():
     print(i,j)
